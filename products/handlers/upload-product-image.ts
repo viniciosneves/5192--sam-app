@@ -19,15 +19,17 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
             new PutObjectCommand({
                 Bucket: BUCKET_NAME,
                 Key: key,
-                Body: Buffer.from(event.body || ''),
+                Body: Buffer.from(event.body || '', 'base64'),
                 ContentType: contentType,
             }),
         );
 
+        //TODO: atualizar o produto com a url da imagem
+
         return {
             statusCode: 201,
             body: JSON.stringify({
-                imageUrl: `https:\\${BUCKET_NAME}.s3.amazonaws.com/${key}`,
+                imageUrl: `https://${BUCKET_NAME}.s3.amazonaws.com/${key}`,
             }),
         };
     } catch (err) {
