@@ -14,10 +14,10 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
             };
         }
 
-        await updateProduct(event.pathParameters.id, body);
+        const updated = await updateProduct(event.pathParameters.id, body);
         return {
-            statusCode: 201,
-            body: '',
+            statusCode: 200,
+            body: JSON.stringify(updated),
         };
     } catch (err) {
         console.log(err);

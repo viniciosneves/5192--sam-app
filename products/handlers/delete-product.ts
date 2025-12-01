@@ -15,7 +15,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         await deleteProduct(event.pathParameters.id);
 
         return {
-            statusCode: 201,
+            statusCode: 204,
             body: '',
         };
     } catch (err) {

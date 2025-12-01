@@ -11,7 +11,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
             price: body.price,
         });
         return {
-            statusCode: 200,
+            statusCode: 201,
             body: JSON.stringify(product),
         };
     } catch (err) {

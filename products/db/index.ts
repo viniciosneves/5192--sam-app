@@ -50,7 +50,7 @@ export async function createProduct(product: IProductDTO) {
 }
 
 export async function deleteProduct(id: string) {
-    ddbDocClient.send(
+    await ddbDocClient.send(
         new DeleteCommand({
             TableName: PRODUCTS_TABLE,
             Key: { id },
@@ -70,13 +70,17 @@ export async function updateProduct(id: string, product: Partial<IProductDTO>) {
         throw new Error('Produto não encontrado');
     }
 
-    ddbDocClient.send(
+    const updated = {
+        ...existingProduct.Item,
+        ...product,
+    };
+
+    await ddbDocClient.send(
         new PutCommand({
             TableName: PRODUCTS_TABLE,
-            Item: {
-                ...existingProduct,
-                ...product,
-            },
+            Item: updated,
         }),
     );
+
+    return updated;
 }
