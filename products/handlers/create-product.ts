@@ -1,14 +1,18 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { createProduct } from '../db';
 
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     try {
+        const body = JSON.parse(event.body || '{}');
+
+        const product = await createProduct({
+            name: body.name,
+            description: body.description,
+            price: body.price,
+        });
         return {
             statusCode: 200,
-            body: JSON.stringify({
-                path: event.path,
-                method: event.httpMethod,
-                fnName: 'products/handlers/create-product.ts',
-            }),
+            body: JSON.stringify(product),
         };
     } catch (err) {
         console.log(err);
