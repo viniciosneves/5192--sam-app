@@ -19,6 +19,12 @@ Resources:
       Runtime: nodejs24.x
       Architectures:
         - x86_64
+      Policies: 
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProductsTable
+      Environment:
+        Variables:
+          PRODUCTS_TABLE: !Ref ProductsTable
       Events:
         HelloWorld:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
@@ -33,6 +39,12 @@ Resources:
         Sourcemap: true
         EntryPoints: 
         - app.ts
+  ProductsTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: id
+        Type: String
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
