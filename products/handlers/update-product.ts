@@ -1,0 +1,31 @@
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { updateProduct } from '../db';
+
+export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+    try {
+        const body = JSON.parse(event.body || '{}');
+
+        if (!event.pathParameters?.id) {
+            return {
+                statusCode: 404,
+                body: JSON.stringify({
+                    erro: 'Produto não encontrado',
+                }),
+            };
+        }
+
+        await updateProduct(event.pathParameters.id, body);
+        return {
+            statusCode: 201,
+            body: '',
+        };
+    } catch (err) {
+        console.log(err);
+        return {
+            statusCode: 500,
+            body: JSON.stringify({
+                message: 'some error happened',
+            }),
+        };
+    }
+};
