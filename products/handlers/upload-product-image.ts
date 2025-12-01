@@ -1,11 +1,33 @@
-import { APIGatewayProxyResult } from 'aws-lambda';
+import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { extension } from 'mime-types';
 
-export const lambdaHandler = async (): Promise<APIGatewayProxyResult> => {
+const s3Client = new S3Client({});
+
+const BUCKET_NAME = process.env.IMAGES_BUCKET;
+
+export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     try {
+        const productId = event.pathParameters?.id;
+        const contentType = event.headers['content-type'] || event.headers['Content-Type'] || 'bin';
+
+        const fileExtension = extension(contentType);
+
+        const key = `products/${productId}.${fileExtension}`;
+
+        await s3Client.send(
+            new PutObjectCommand({
+                Bucket: BUCKET_NAME,
+                Key: key,
+                Body: Buffer.from(event.body || ''),
+                ContentType: contentType,
+            }),
+        );
+
         return {
-            statusCode: 200,
+            statusCode: 201,
             body: JSON.stringify({
-                message: 'Upload image endpoint',
+                imageUrl: `https:\\${BUCKET_NAME}.s3.amazonaws.com/${key}`,
             }),
         };
     } catch (err) {
