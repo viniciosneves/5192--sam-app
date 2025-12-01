@@ -35,7 +35,7 @@ export interface IProductDTO {
 export async function createProduct(product: IProductDTO) {
     const dbProduct = {
         ...product,
-        id: randomUUID,
+        id: randomUUID(),
         createdAt: new Date().toISOString(),
     };
 
